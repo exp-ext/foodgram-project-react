@@ -1,0 +1,18 @@
+# Djando + util
+Django~=4.1.7
+
+pillow~=9.4.0
+sorl-thumbnail~=12.9.0
+
+python-dotenv~=0.21.0
+
+pytils~=0.4.1
+
+# Debagger
+django_debug_toolbar>=3.8.1
+
+# REST API
+djangorestframework~=3.14.0
+PyJWT~=2.6.0
+djangorestframework-simplejwt~=5.2.2
+django-filter~=22.1
