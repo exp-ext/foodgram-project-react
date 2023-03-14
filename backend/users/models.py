@@ -1,7 +1,7 @@
-from django.db import models
-from django.contrib.auth.models import AbstractUser
-from django.utils.translation import gettext_lazy as _
 from core.models import CreationDate
+from django.contrib.auth.models import AbstractUser
+from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 
 class User(AbstractUser):
@@ -10,24 +10,30 @@ class User(AbstractUser):
         USER = 'user', _('Авторизованный пользователь')
 
     email = models.EmailField(
-        verbose_name='Адрес электронной почты',
-        max_length=256,
+        verbose_name=_('Адрес электронной почты'),
+        max_length=254,
         unique=True,
     )
     role = models.CharField(
-        verbose_name='Пользовательская роль',
+        verbose_name=_('Пользовательская роль'),
         max_length=10,
         choices=Role.choices,
         default=Role.USER
     )
-    is_blocked = models.BooleanField(
-        verbose_name='Состояние прав пользователя',
-        default=False
+    is_active = models.BooleanField(
+        verbose_name=_('False, если user блокирован'),
+        default=True
     )
-    
+
     class Meta:
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
+        constraints = (
+            models.CheckConstraint(
+                check=models.Q(username__length__gte=3),
+                name='\nusername is too short\n',
+            ),
+        )
 
     def __str__(self):
         return self.username
@@ -41,15 +47,16 @@ class User(AbstractUser):
         )
 
 
-class Author_Subscription(CreationDate):
+class AuthorSubscription(CreationDate):
+
     author = models.ForeignKey(
-        verbose_name='Автор',
+        verbose_name=_('Автор'),
         related_name='subscribers',
         to=User,
         on_delete=models.CASCADE,
     )
     user = models.ForeignKey(
-        verbose_name='Подписчик',
+        verbose_name=_('Подписчик'),
         related_name='subscriptions',
         to=User,
         on_delete=models.CASCADE,

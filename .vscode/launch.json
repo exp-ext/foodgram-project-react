@@ -1,0 +1,43 @@
+{
+    // Используйте IntelliSense, чтобы узнать о возможных атрибутах.
+    // Наведите указатель мыши, чтобы просмотреть описания существующих атрибутов.
+    // Для получения дополнительной информации посетите: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Django",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/backend/manage.py",
+            "args": [
+                "runserver"
+            ],
+            "django": true,
+            "justMyCode": true
+        },
+        {
+            "name": "Python: unytests",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/backend/",
+            "program": "manage.py",
+            "args": [
+                "test",
+                "-v2"               
+            ],     
+            "django": true,
+            "justMyCode": true
+        },
+        {
+            "name": "Django: convert_from_csv",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/backend/",
+            "program": "manage.py",
+            "args": [
+                "convert_from_csv"
+            ],
+            "django": true
+        },
+    ]
+}

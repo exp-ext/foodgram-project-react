@@ -1,5 +1,15 @@
 {
     "cSpell.words": [
-        "genretitle"
+        "десериализации",
+        "cоздание",
+        "genretitle",
+        "invalidemail",
+        "oбновление",
+        "sttrip"
+    ],
+    "python.linting.flake8Enabled": true,
+    "python.linting.enabled": true,
+    "cSpell.ignoreWords": [
+        "cписок"
     ]
 }

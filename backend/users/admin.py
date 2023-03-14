@@ -12,7 +12,7 @@ class UserAdmin(admin.ModelAdmin):
         'last_name',
         'role',
         'email',
-        'is_blocked'
+        'is_active'
     )
     search_fields = ('username',)
     list_filter = ('email', 'username')
