@@ -31,7 +31,7 @@ class IngredientViewSetTestCase(APITestCase):
         url = reverse('recipes:ingredients-list')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 2)
+        self.assertEqual(response.data.get('count'), 2)
 
     def test_retrieve_ingredient(self):
         url = reverse('recipes:ingredients-detail', args=[self.ingredient1.pk])

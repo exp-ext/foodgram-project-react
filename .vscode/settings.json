@@ -1,11 +1,14 @@
 {
     "cSpell.words": [
         "десериализации",
+        "authorpassword",
         "cоздание",
         "genretitle",
         "invalidemail",
         "oбновление",
-        "sttrip"
+        "sttrip",
+        "testauthor",
+        "unfolow"
     ],
     "python.linting.flake8Enabled": true,
     "python.linting.enabled": true,
