@@ -10,3 +10,8 @@ djangorestframework~=3.14.0
 django-filter~=22.1
 djoser~=2.1.0
 drf-extra-fields~=3.4.1
+
+# Django productions
+gunicorn~=20.1.0
+whitenoise~=6.3.0
+psycopg2-binary~=2.9.5

@@ -1,9 +1,11 @@
 from core.permissions import IsAdmin, IsOwner, ReadOnly
+from rest_framework.filters import SearchFilter
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
-from .filters import IngredientSearchFilter
+from .filters import RecipeFilter
 from .models import Ingredient, Recipe, Tag
-from .serializers import IngredientSerializer, RecipeSerializer, TagSerializer
+from .serializers import (IngredientSerializer, RecipeCreateSerializer,
+                          RecipeSerializer, TagSerializer)
 
 
 class TagViewSet(ReadOnlyModelViewSet):
@@ -19,7 +21,7 @@ class TagViewSet(ReadOnlyModelViewSet):
     permission_classes = (IsAdmin | ReadOnly,)
 
 
-class IngredientViewSet(ModelViewSet):
+class IngredientViewSet(ReadOnlyModelViewSet):
     """
     Ингредиенты:
     - `GET` cписок ингредиентов с возможностью поиска по имени
@@ -28,7 +30,7 @@ class IngredientViewSet(ModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     permission_classes = (IsAdmin | ReadOnly,)
-    filter_backends = (IngredientSearchFilter, )
+    filter_backends = (SearchFilter, )
     search_fields = ('^name', )
 
 
@@ -45,3 +47,9 @@ class RecipeViewSet(ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
     permission_classes = (IsOwner | IsAdmin | ReadOnly,)
+    filterset_class = RecipeFilter
+
+    def get_serializer_class(self):
+        if self.action in ('list', 'retrieve'):
+            return RecipeSerializer
+        return RecipeCreateSerializer

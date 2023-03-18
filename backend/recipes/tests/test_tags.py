@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.db.utils import IntegrityError
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.authtoken.models import Token
@@ -34,7 +35,17 @@ class TagsTestCase(APITestCase):
         )
         router.register('tags', TagViewSet, basename='tags')
 
+    def test_create_nonunique_tags(self):
+        """
+        Тест на уникальность поля name.
+        """
+        with self.assertRaises(IntegrityError):
+            Tag.objects.create(name='tag1', color='#E42C2D', slug='test2')
+
     def test_list_tags(self):
+        """
+        Тест получения списка тегов.
+        """
         url = reverse('recipes:tags-list')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -44,6 +55,9 @@ class TagsTestCase(APITestCase):
         self.assertEqual(result[1].get('name'), self.tag2.name)
 
     def test_retrieve_tag(self):
+        """
+        Тест получения тега по id.
+        """
         url = reverse('recipes:tags-detail', args=[self.tag1.pk])
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)

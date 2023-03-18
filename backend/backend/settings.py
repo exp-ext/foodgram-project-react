@@ -41,7 +41,12 @@ if not SECRET_KEY:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = int(os.environ.get('DEBUG', default=0))
 
-ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
+LOCAL_DEV = int(os.environ.get('LOCAL_DEV', default=0))
+
+ALLOWED_HOSTS = os.environ.get(
+    'DJANGO_ALLOWED_HOSTS',
+    default='localhost'
+).split(' ')
 
 # Application definition
 
@@ -119,7 +124,7 @@ POSTGRES = {
     }
 }
 
-DATABASES = SQLITE if DEBUG else POSTGRES
+DATABASES = SQLITE if LOCAL_DEV else POSTGRES
 
 
 # Password validation
@@ -172,17 +177,17 @@ STATICFILES_FINDERS = (
 
 STATIC_URL = '/static/'
 
-STATIC_DIR = os.fspath(PurePath(BASE_DIR, 'static'))
-
 if DEBUG:
-    STATICFILES_DIRS = (STATIC_DIR,)
+    STATICFILES_DIRS = (os.fspath(PurePath(BASE_DIR, 'static')),)
 else:
-    STATIC_ROOT = STATIC_DIR
+    STATIC_ROOT = '/app/static/'
 
-# MEDIA
 MEDIA_URL = '/media/'
 
-MEDIA_ROOT = os.fspath(PurePath(BASE_DIR, 'media'))
+if DEBUG:
+    MEDIA_ROOT = os.fspath(PurePath(BASE_DIR, 'media'))
+else:
+    MEDIA_ROOT = '/app/media/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field

@@ -3,11 +3,45 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models.functions import Length
 from django.utils.translation import gettext_lazy as _
+from pytils.translit import slugify
 from sorl.thumbnail import ImageField
 
 User = get_user_model()
 
 models.CharField.register_lookup(Length)
+
+
+class Tag(models.Model):
+
+    name = models.CharField(
+        verbose_name=_('Название'),
+        max_length=256,
+        unique=True,
+    )
+    color = models.CharField(
+        verbose_name=_('Цветовой HEX-код'),
+        max_length=7,
+        null=False,
+        unique=True,
+    )
+    slug = models.CharField(
+        verbose_name=_('Slug'),
+        max_length=64,
+        unique=True,
+        db_index=False,
+    )
+
+    class Meta:
+        verbose_name = 'Тэг'
+        verbose_name_plural = 'Тэги'
+
+    def __str__(self) -> str:
+        return f'{self.name} (цвет: {self.color})'
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)[:20]
+        super().save(*args, **kwargs)
 
 
 class Ingredient(CommonFieldsModel):
@@ -57,14 +91,13 @@ class Recipe(CommonFieldsModel):
     )
     ingredients = models.ManyToManyField(
         verbose_name='Ингредиенты',
-        related_name='recipes',
         to=Ingredient,
         through='recipes.QuantityIngredients',
+        through_fields=('recipe', 'ingredient'),
     )
     tags = models.ManyToManyField(
-        verbose_name=_('Тег'),
-        related_name='recipes',
-        to='Tag',
+        verbose_name=_('Теги'),
+        to=Tag,
     )
     cooking_time = models.PositiveSmallIntegerField(
         verbose_name='Время приготовления',
@@ -89,49 +122,21 @@ class Recipe(CommonFieldsModel):
         return f'{self.name}. Автор: {self.author.username}'
 
 
-class Tag(models.Model):
-
-    name = models.CharField(
-        verbose_name=_('Название'),
-        max_length=256,
-        unique=True,
-    )
-    color = models.CharField(
-        verbose_name=_('Цветовой HEX-код'),
-        max_length=7,
-        null=False,
-        unique=True,
-    )
-    slug = models.CharField(
-        verbose_name=_('Slug'),
-        max_length=64,
-        unique=True,
-        db_index=False,
-    )
-
-    class Meta:
-        verbose_name = 'Тэг'
-        verbose_name_plural = 'Тэги'
-
-    def __str__(self) -> str:
-        return f'{self.name} (цвет: {self.color})'
-
-
 class QuantityIngredients(models.Model):
 
     recipe = models.ForeignKey(
         verbose_name=_('Рецепт'),
-        related_name='ingredient',
+        related_name='qt_ingredients',
         to=Recipe,
         on_delete=models.CASCADE,
     )
-    ingredients = models.ForeignKey(
+    ingredient = models.ForeignKey(
         verbose_name=_('Ингредиент'),
-        related_name='recipe',
+        related_name='qt_recipes',
         to=Ingredient,
         on_delete=models.CASCADE,
     )
-    quantity = models.PositiveSmallIntegerField(
+    amount = models.PositiveSmallIntegerField(
         verbose_name=_('Количество'),
         default=0,
     )
@@ -142,14 +147,14 @@ class QuantityIngredients(models.Model):
         ordering = ('recipe', )
         constraints = (
             models.UniqueConstraint(
-                fields=('recipe', 'ingredients'),
+                fields=('recipe', 'ingredient'),
                 name=('\n%(app_label)s_%(class)s '
                       'ingredient has already been added\n'),
             ),
         )
 
     def __str__(self) -> str:
-        return f'{self.quantity} {self.ingredients}'
+        return f'{self.amount} {self.ingredient}'
 
 
 class FavoritesList(CreationDate):
