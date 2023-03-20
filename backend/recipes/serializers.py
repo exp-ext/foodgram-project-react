@@ -1,5 +1,6 @@
 from collections import OrderedDict
 
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.db.models.query import QuerySet
@@ -9,6 +10,8 @@ from rest_framework.serializers import (IntegerField, ModelSerializer,
                                         PrimaryKeyRelatedField, ReadOnlyField,
                                         SerializerMethodField)
 from users.serializers import UserSerializer
+
+User = get_user_model()
 
 
 class TagSerializer(ModelSerializer):
@@ -59,8 +62,8 @@ class RecipeSerializer(ModelSerializer):
     tags = TagSerializer(many=True, read_only=True)
     author = UserSerializer(read_only=True)
     ingredients = SerializerMethodField(read_only=True)
-    # is_favorited = SerializerMethodField()
-    # is_in_shopping_cart = SerializerMethodField()
+    is_favorited = SerializerMethodField()
+    is_in_shopping_cart = SerializerMethodField()
     image = Base64ImageField()
 
     class Meta:
@@ -87,23 +90,23 @@ class RecipeSerializer(ModelSerializer):
         queryset = obj.qt_ingredients.all()
         return QuantityIngredientsSerializer(queryset, many=True).data
 
-    # def get_is_favorited(self, obj: Recipe) -> bool:
-    #     """
-    #     Возвращает :obj:`bool` наличия рецепта в избранном.
-    #     """
-    #     user = self.context.get('view').request.user
-    #     if user.is_anonymous:
-    #         return False
-    #     return user.is_favorited.filter(recipe=obj).exists()
+    def get_is_favorited(self, obj: Recipe) -> bool:
+        """
+        Возвращает :obj:`bool` наличия рецепта в избранном.
+        """
+        user = self.context.get('view').request.user
+        if user.is_anonymous:
+            return False
+        return user.signed.filter(recipe=obj).exists()
 
-    # def get_is_in_shopping_cart(self, obj: Recipe) -> bool:
-    #     """
-    #     Возвращает :obj:`bool` наличие рецепта в списке покупок.
-    #     """
-    #     user = self.context.get('view').request.user
-    #     if user.is_anonymous:
-    #         return False
-    #     return user.is_in_shopping_cart.filter(recipe=obj).exists()
+    def get_is_in_shopping_cart(self, obj: Recipe) -> bool:
+        """
+        Возвращает :obj:`bool` наличие рецепта в списке покупок.
+        """
+        user = self.context.get('view').request.user
+        if user.is_anonymous:
+            return False
+        return user.customer.filter(recipe=obj).exists()
 
 
 class QuantityIngredientsCreateSerializer(ModelSerializer):
@@ -117,9 +120,9 @@ class QuantityIngredientsCreateSerializer(ModelSerializer):
 
 class RecipeCreateSerializer(ModelSerializer):
     """Сериализатор для создания и изменения рецептов."""
+    id = ReadOnlyField()
     tags = PrimaryKeyRelatedField(many=True, queryset=Tag.objects.all())
     author = UserSerializer(read_only=True)
-    id = ReadOnlyField()
     ingredients = QuantityIngredientsCreateSerializer(many=True)
     image = Base64ImageField()
 
@@ -127,13 +130,13 @@ class RecipeCreateSerializer(ModelSerializer):
         model = Recipe
         fields = (
             'id',
-            'ingredients',
             'tags',
-            'image',
+            'author',
+            'ingredients',
             'name',
+            'image',
             'text',
             'cooking_time',
-            'author'
         )
 
     def validate(self, obj: OrderedDict) -> OrderedDict:
@@ -208,3 +211,12 @@ class RecipeCreateSerializer(ModelSerializer):
 
     def to_representation(self, instance):
         return RecipeSerializer(instance, context=self.context).data
+
+
+class CroppedRecipeSerializer(ModelSerializer):
+    """Сериализатор для избранного."""
+
+    class Meta:
+        model = Recipe
+        fields = ('id', 'name', 'image', 'cooking_time')
+        read_only_fields = ('id', 'name', 'image', 'cooking_time')

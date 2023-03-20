@@ -1,11 +1,19 @@
 from core.permissions import IsAdmin, IsOwner, ReadOnly
+from django.db.models.query import QuerySet
+from django.http import HttpRequest
+from django.shortcuts import get_object_or_404
+from rest_framework import status
+from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from .filters import RecipeFilter
-from .models import Ingredient, Recipe, Tag
-from .serializers import (IngredientSerializer, RecipeCreateSerializer,
-                          RecipeSerializer, TagSerializer)
+from .models import FavoritesList, Ingredient, Recipe, ShoppingList, Tag
+from .serializers import (CroppedRecipeSerializer, IngredientSerializer,
+                          RecipeCreateSerializer, RecipeSerializer,
+                          TagSerializer)
 
 
 class TagViewSet(ReadOnlyModelViewSet):
@@ -53,3 +61,70 @@ class RecipeViewSet(ModelViewSet):
         if self.action in ('list', 'retrieve'):
             return RecipeSerializer
         return RecipeCreateSerializer
+
+    @action(detail=True, methods=('post', 'delete'),
+            permission_classes=(IsAuthenticated,))
+    def favorite(self, request: HttpRequest, pk: str = None):
+        method = 'favorite'
+        return self.__del_add(FavoritesList, request, pk, method)
+
+    @action(detail=True, methods=('post', 'delete'),
+            permission_classes=(IsAuthenticated,))
+    def shopping_cart(self, request: HttpRequest, pk: str = None):
+        method = 'shopping_cart'
+        return self.__del_add(ShoppingList, request, pk, method)
+
+    def __del_add(self,
+                  model: QuerySet,
+                  request: HttpRequest,
+                  pk: str,
+                  method: str):
+        """
+        Общий метод удаления и добавления записи в модели
+        FavoritesList и ShoppingList.
+        """
+        answer_text = {
+            'favorite': {
+                'detail': 'Рецепт успешно удален из избранного.',
+                'errors': 'Рецепт уже находится в избранном.',
+            },
+            'shopping_cart': {
+                'detail': 'Рецепт успешно удален из списка покупок.',
+                'errors': 'Рецепт уже находится в списке покупок.',
+            }
+        }
+        recipe = get_object_or_404(Recipe, id=pk)
+        if request.method == 'DELETE':
+            get_object_or_404(
+                model,
+                user=request.user,
+                recipe=recipe
+            ).delete()
+            return Response(
+                {'detail': answer_text[method].get('detail')},
+                status=status.HTTP_204_NO_CONTENT
+            )
+        _, result = model.objects.get_or_create(
+            user=request.user,
+            recipe=recipe
+        )
+        if result:
+            serializer = CroppedRecipeSerializer(
+                recipe,
+                data=request.data,
+                context={"request": request}
+            )
+            serializer.is_valid(raise_exception=True)
+            return Response(
+                    serializer.data,
+                    status=status.HTTP_201_CREATED
+                )
+        return Response(
+            {'errors': answer_text[method].get('errors')},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    @action(detail=True, methods=('get',),
+            permission_classes=(IsAuthenticated,))
+    def download_shopping_cart(self, request, pk=None):
+        pass

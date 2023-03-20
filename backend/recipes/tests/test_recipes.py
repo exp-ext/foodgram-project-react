@@ -1,3 +1,5 @@
+import json
+
 from django.contrib.auth import get_user_model
 from django.db.utils import IntegrityError
 from django.urls import reverse
@@ -6,7 +8,8 @@ from rest_framework.authtoken.models import Token
 from rest_framework.routers import DefaultRouter
 from rest_framework.test import APITestCase
 
-from ..models import Ingredient, QuantityIngredients, Recipe, Tag
+from ..models import (FavoritesList, Ingredient, QuantityIngredients, Recipe,
+                      ShoppingList, Tag)
 from ..views import RecipeViewSet
 
 router = DefaultRouter()
@@ -174,3 +177,49 @@ class TagsTestCase(APITestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['name'], self.recipe.name)
+
+    def test_favorite_create_destroy(self):
+        """
+        Тест на добавление и удаление из избранного.
+        """
+        start_count = FavoritesList.objects.count()
+        url = f'/api/recipes/{self.recipe.pk}/favorite/'
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(FavoritesList.objects.count(), start_count + 1)
+        recipe = Recipe.objects.get(id=self.recipe.pk)
+        self.assertTrue(FavoritesList.objects.filter(
+            user=self.user,
+            recipe=recipe
+        ).exists())
+        response = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(response.get('id'), self.recipe.pk)
+        self.assertEqual(response.get('name'), self.recipe.name)
+        self.assertEqual(
+            response.get('cooking_time'), self.recipe.cooking_time
+        )
+        response = self.client.delete(url)
+        self.assertEqual(FavoritesList.objects.count(), start_count)
+
+    def test_shopping_cart_create_destroy(self):
+        """
+        Тест на добавление и удаление из корзины.
+        """
+        start_count = ShoppingList.objects.count()
+        url = f'/api/recipes/{self.recipe.pk}/shopping_cart/'
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(ShoppingList.objects.count(), start_count + 1)
+        recipe = Recipe.objects.get(id=self.recipe.pk)
+        self.assertTrue(ShoppingList.objects.filter(
+            user=self.user,
+            recipe=recipe
+        ).exists())
+        response = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(response.get('id'), self.recipe.pk)
+        self.assertEqual(response.get('name'), self.recipe.name)
+        self.assertEqual(
+            response.get('cooking_time'), self.recipe.cooking_time
+        )
+        response = self.client.delete(url)
+        self.assertEqual(ShoppingList.objects.count(), start_count)

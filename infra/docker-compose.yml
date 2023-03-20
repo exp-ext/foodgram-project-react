@@ -20,7 +20,7 @@ services:
       - static_value:/var/html/static/:rw
       - media_value:/var/html/media/:rw
     depends_on:
-      - web
+      - backend
       - frontend
 
   db:
@@ -36,7 +36,7 @@ services:
       timeout: 5s
       retries: 5
 
-  web:
+  backend:
     build:
       context: ../backend
       dockerfile: Dockerfile
