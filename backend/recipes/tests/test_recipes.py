@@ -8,7 +8,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.routers import DefaultRouter
 from rest_framework.test import APITestCase
 
-from ..models import (FavoritesList, Ingredient, QuantityIngredients, Recipe,
+from ..models import (FavoritesList, Ingredient, IngredientsInRecipe, Recipe,
                       ShoppingList, Tag)
 from ..views import RecipeViewSet
 
@@ -81,7 +81,7 @@ class TagsTestCase(APITestCase):
         router.register('recipes', RecipeViewSet, basename='tags')
 
         self.recipe = Recipe.objects.create(**self.recipe_data)
-        QuantityIngredients.objects.create(
+        IngredientsInRecipe.objects.create(
             recipe=self.recipe,
             ingredient=self.ingredient1,
             amount=10

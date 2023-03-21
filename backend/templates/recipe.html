@@ -1,0 +1,43 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+ 
+  <title>The HTML5 Herald</title>
+  <meta name="description" content="The HTML5 Herald">
+  <meta name="author" content="SitePoint">
+
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+
+  <div class="banner">
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <h3>Foodgram project</h3>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+  </div>
+ 
+</head>
+
+<body>
+  <div class="content">
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <h2>Список покупок</h2> 
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+
+    <ul>
+      {% for ingredient in ingredients %}
+        <li><strong>{{ingredient.recipe__ingredients__name}}({{ ingredient.recipe__ingredients__measurement_unit}}) - {{ ingredient.total_amount }}</strong></li>
+      {% endfor %}
+    </ul>
+
+  </div>
+
+
+</body>
+
+</html>

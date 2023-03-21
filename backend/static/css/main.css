@@ -1,0 +1,35 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
+html,
+body {
+	height: 100%;
+}
+
+.banner {
+    background: url(../img/top-banner.jpg);
+    background-size: cover;
+}
+
+.banner h3 {
+    color: #fff;
+    font-weight: 400;
+    font-size: 32px;
+    text-align: left;
+    padding-left: 50px;
+}
+
+.content {
+	flex: 1 0 auto;
+    list-style-type: none;
+    text-align: left;
+    padding-left: 50px;
+}
+
+.content h2 {
+    font-size: 36px;
+    font-weight: 600;
+    text-align: center;
+}

@@ -1,8 +1,8 @@
 from typing import Any, Dict, List
 
+from core.serializers import CroppedRecipeSerializer
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
-from recipes.models import Recipe
 from rest_framework.serializers import (CharField, ModelSerializer,
                                         ReadOnlyField, Serializer,
                                         SerializerMethodField, ValidationError)
@@ -67,15 +67,6 @@ class SetPasswordSerializer(Serializer):
         return validated_data
 
 
-class ShortRecipeSerializer(ModelSerializer):
-    """
-    Сериализатор рецептов для выдачи в подписке.
-    """
-    class Meta:
-        model = Recipe
-        fields = ('id', 'name', 'image', 'cooking_time')
-
-
 class SubscriptionsSerializer(UserSerializer):
     """Сериализатор вывода авторов на которых подписан текущий пользователь.
     """
@@ -115,7 +106,7 @@ class SubscriptionsSerializer(UserSerializer):
         queryset = obj.recipes.all()
         if limit:
             queryset = queryset[:int(limit)]
-        return ShortRecipeSerializer(queryset, many=True).data
+        return CroppedRecipeSerializer(queryset, many=True).data
 
     def get_recipes_count(self, obj: User) -> int:
         """

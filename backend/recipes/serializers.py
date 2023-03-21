@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.db.models.query import QuerySet
 from drf_extra_fields.fields import Base64ImageField
-from recipes.models import Ingredient, QuantityIngredients, Recipe, Tag
+from recipes.models import Ingredient, IngredientsInRecipe, Recipe, Tag
 from rest_framework.serializers import (IntegerField, ModelSerializer,
                                         PrimaryKeyRelatedField, ReadOnlyField,
                                         SerializerMethodField)
@@ -34,7 +34,7 @@ class IngredientSerializer(ModelSerializer):
         read_only_fields = '__all__',
 
 
-class QuantityIngredientsSerializer(ModelSerializer):
+class IngredientsInRecipeSerializer(ModelSerializer):
     """
     Сериализатор получения ингредиента с количеством для рецепта
     для связанных моделей.
@@ -46,7 +46,7 @@ class QuantityIngredientsSerializer(ModelSerializer):
     )
 
     class Meta:
-        model = QuantityIngredients
+        model = IngredientsInRecipe
         fields = (
             'id',
             'name',
@@ -88,7 +88,7 @@ class RecipeSerializer(ModelSerializer):
     def get_ingredients(self, obj: Recipe) -> OrderedDict:
         """Возвращает списка ингредиентов рецепта."""
         queryset = obj.qt_ingredients.all()
-        return QuantityIngredientsSerializer(queryset, many=True).data
+        return IngredientsInRecipeSerializer(queryset, many=True).data
 
     def get_is_favorited(self, obj: Recipe) -> bool:
         """
@@ -109,12 +109,12 @@ class RecipeSerializer(ModelSerializer):
         return user.customer.filter(recipe=obj).exists()
 
 
-class QuantityIngredientsCreateSerializer(ModelSerializer):
+class IngredientsInRecipeCreateSerializer(ModelSerializer):
     """Дополнительный сериализатор рецептов для поля ingredients."""
     id = IntegerField()
 
     class Meta:
-        model = QuantityIngredients
+        model = IngredientsInRecipe
         fields = ('id', 'amount')
 
 
@@ -123,7 +123,7 @@ class RecipeCreateSerializer(ModelSerializer):
     id = ReadOnlyField()
     tags = PrimaryKeyRelatedField(many=True, queryset=Tag.objects.all())
     author = UserSerializer(read_only=True)
-    ingredients = QuantityIngredientsCreateSerializer(many=True)
+    ingredients = IngredientsInRecipeCreateSerializer(many=True)
     image = Base64ImageField()
 
     class Meta:
@@ -166,19 +166,19 @@ class RecipeCreateSerializer(ModelSerializer):
                                ingredients: dict,
                                tags: list) -> None:
         """
-        Создаёт экземпляры класса QuantityIngredients
+        Создаёт экземпляры класса IngredientsInRecipe
         связанных моделей Recipe и Ingredients и связывает
         Recipe с Tags.
         """
         recipe.tags.set(tags)
         objs = tuple(
-            QuantityIngredients(
+            IngredientsInRecipe(
                 recipe=recipe,
                 ingredient=Ingredient.objects.get(pk=ingredient['id']),
                 amount=ingredient['amount'])
             for ingredient in ingredients
         )
-        QuantityIngredients.objects.bulk_create(objs)
+        IngredientsInRecipe.objects.bulk_create(objs)
 
     @transaction.atomic
     def create(self, validated_data):
@@ -200,7 +200,7 @@ class RecipeCreateSerializer(ModelSerializer):
         ingredients = validated_data.pop('ingredients')
         instance = super().update(instance, validated_data)
 
-        QuantityIngredients.objects.filter(
+        IngredientsInRecipe.objects.filter(
             recipe=instance,
             ingredient__in=instance.ingredients.all()
         ).delete()
@@ -211,12 +211,3 @@ class RecipeCreateSerializer(ModelSerializer):
 
     def to_representation(self, instance):
         return RecipeSerializer(instance, context=self.context).data
-
-
-class CroppedRecipeSerializer(ModelSerializer):
-    """Сериализатор для избранного."""
-
-    class Meta:
-        model = Recipe
-        fields = ('id', 'name', 'image', 'cooking_time')
-        read_only_fields = ('id', 'name', 'image', 'cooking_time')

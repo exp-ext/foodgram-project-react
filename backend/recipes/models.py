@@ -90,9 +90,9 @@ class Recipe(CommonFieldsModel):
         verbose_name=_('Текстовое описание'),
     )
     ingredients = models.ManyToManyField(
-        verbose_name='Ингредиенты',
+        verbose_name=_('Ингредиенты'),
         to=Ingredient,
-        through='recipes.QuantityIngredients',
+        through='recipes.IngredientsInRecipe',
         through_fields=('recipe', 'ingredient'),
     )
     tags = models.ManyToManyField(
@@ -100,7 +100,7 @@ class Recipe(CommonFieldsModel):
         to=Tag,
     )
     cooking_time = models.PositiveSmallIntegerField(
-        verbose_name='Время приготовления',
+        verbose_name=_('Время приготовления'),
         default=0,
     )
 
@@ -122,7 +122,7 @@ class Recipe(CommonFieldsModel):
         return f'{self.name}. Автор: {self.author.username}'
 
 
-class QuantityIngredients(models.Model):
+class IngredientsInRecipe(models.Model):
 
     recipe = models.ForeignKey(
         verbose_name=_('Рецепт'),

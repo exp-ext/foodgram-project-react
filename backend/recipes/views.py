@@ -1,7 +1,11 @@
+import weasyprint
 from core.permissions import IsAdmin, IsOwner, ReadOnly
+from core.serializers import CroppedRecipeSerializer
+from django.db.models import Prefetch, Sum
 from django.db.models.query import QuerySet
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404
+from django.template.loader import get_template
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
@@ -11,9 +15,8 @@ from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from .filters import RecipeFilter
 from .models import FavoritesList, Ingredient, Recipe, ShoppingList, Tag
-from .serializers import (CroppedRecipeSerializer, IngredientSerializer,
-                          RecipeCreateSerializer, RecipeSerializer,
-                          TagSerializer)
+from .serializers import (IngredientSerializer, RecipeCreateSerializer,
+                          RecipeSerializer, TagSerializer)
 
 
 class TagViewSet(ReadOnlyModelViewSet):
@@ -124,7 +127,40 @@ class RecipeViewSet(ModelViewSet):
             status=status.HTTP_400_BAD_REQUEST
         )
 
-    @action(detail=True, methods=('get',),
+    @action(detail=False, methods=('get',),
             permission_classes=(IsAuthenticated,))
-    def download_shopping_cart(self, request, pk=None):
+    def download_shopping_cart(self, request):
+        """Скачать список покупок."""
         pass
+        ingredients = (
+            request.user.customer
+            .prefetch_related(
+                Prefetch(
+                    'recipe__ingredients',
+                    queryset=(
+                        Ingredient.objects
+                        .select_related('name', 'measurement_unit')
+                    )
+                )
+            )
+            .values(
+                'recipe__ingredients__name',
+                'recipe__ingredients__measurement_unit'
+            )
+            .annotate(total_amount=Sum('recipe__qt_ingredients__amount'))
+            .distinct()
+        )
+        context = {'ingredients': ingredients}
+        template = get_template('recipe.html')
+        html = template.render(context)
+        pdf_file = (
+            weasyprint.HTML(string=html)
+            .write_pdf(stylesheets=['backend/static/css/main.css'])
+        )
+        response = HttpResponse(
+            pdf_file,
+            content_type='application/pdf',
+            status=status.HTTP_200_OK
+        )
+        response['Content-Disposition'] = 'filename="shopping_list.pdf"'
+        return response

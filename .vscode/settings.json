@@ -4,6 +4,7 @@
         "authorpassword",
         "cоздание",
         "filterset",
+        "FPDF",
         "genretitle",
         "inrgedient",
         "invalidemail",
@@ -11,7 +12,8 @@
         "oбновление",
         "sttrip",
         "testauthor",
-        "unfolow"
+        "unfolow",
+        "weasyprint"
     ],
     "python.linting.flake8Enabled": true,
     "python.linting.enabled": true,
