@@ -1,6 +1,7 @@
-from typing import Any, Dict, List
+from typing import Any, Dict, List, OrderedDict
 
 from core.serializers import CroppedRecipeSerializer
+from core.validators import field_validator
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from rest_framework.serializers import (CharField, ModelSerializer,
@@ -21,15 +22,24 @@ class UserSerializer(ModelSerializer):
     class Meta:
         model = User
         fields = (
+            'email',
             'id',
             'username',
-            'email',
             'first_name',
             'last_name',
             'password',
             'is_subscribed',
         )
-        extra_kwargs = {'password': {'write_only': True}}
+
+    def validate(self, obj: OrderedDict) -> OrderedDict:
+        """
+        Валидация тегов и ингридиентов.
+        """
+        field_list = [
+            'email', 'username', 'first_name', 'last_name', 'password'
+        ]
+        field_validator(obj, field_list)
+        return obj
 
     def get_is_subscribed(self, obj: User) -> bool:
         """
@@ -47,6 +57,17 @@ class SetPasswordSerializer(Serializer):
     """Изменение пароля текущего пользователя."""
     new_password = CharField()
     current_password = CharField()
+
+    class Meta:
+        model = User
+        fields = (
+            'new_password',
+            'current_password',
+        )
+        extra_kwargs = {
+            'new_password': {'required': True, 'allow_blank': False},
+            'current_password': {'required': True, 'allow_blank': False},
+        }
 
     def validate(self, obj):
         validate_password(obj['new_password'])
@@ -67,22 +88,24 @@ class SetPasswordSerializer(Serializer):
         return validated_data
 
 
-class SubscriptionsSerializer(UserSerializer):
+class SubscriptionsSerializer(Serializer):
     """Сериализатор вывода авторов на которых подписан текущий пользователь.
     """
-    username = ReadOnlyField()
     email = ReadOnlyField()
+    id = ReadOnlyField()
+    username = ReadOnlyField()
     first_name = ReadOnlyField()
     last_name = ReadOnlyField()
+    is_subscribed = SerializerMethodField()
     recipes = SerializerMethodField()
     recipes_count = SerializerMethodField()
 
     class Meta:
         model = User
         fields = (
+            'email',
             'id',
             'username',
-            'email',
             'first_name',
             'last_name',
             'is_subscribed',

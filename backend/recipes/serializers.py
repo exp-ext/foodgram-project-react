@@ -1,7 +1,7 @@
-from collections import OrderedDict
+from typing import OrderedDict
 
+from core.validators import field_validator, ingredients_validator
 from django.contrib.auth import get_user_model
-from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.db.models.query import QuerySet
 from drf_extra_fields.fields import Base64ImageField
@@ -143,21 +143,10 @@ class RecipeCreateSerializer(ModelSerializer):
         """
         Валидация тегов и ингридиентов.
         """
-
-        for field in ['name', 'text', 'ingredients', 'tags', 'cooking_time']:
-            if not obj.get(field):
-                raise ValidationError(
-                    f'{field} - Обязательное поле.'
-                )
-        ingredients = self.initial_data.get('ingredients')
-        ingredients_id = tuple(i['id'] for i in ingredients)
-        if len(ingredients_id) != len(set(ingredients_id)):
-            raise ValidationError(
-                'Ингредиенты должны быть уникальны.'
-            )
-        obj.update({
-            'author': self.context.get('request').user
-        })
+        field_list = ['name', 'text', 'ingredients', 'tags', 'cooking_time']
+        field_validator(obj, field_list)
+        ingredients_validator(self)
+        obj.update({'author': self.context.get('request').user})
         return obj
 
     @transaction.atomic

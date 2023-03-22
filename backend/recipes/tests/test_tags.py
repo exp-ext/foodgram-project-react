@@ -37,7 +37,7 @@ class TagsTestCase(APITestCase):
 
     def test_create_nonunique_tags(self):
         """
-        Тест на уникальность поля name.
+        Тест на создание неуникального поля name.
         """
         with self.assertRaises(IntegrityError):
             Tag.objects.create(name='tag1', color='#E42C2D', slug='test2')
@@ -62,3 +62,11 @@ class TagsTestCase(APITestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['name'], self.tag1.name)
+
+    def test_retrieve_wrong_tag(self):
+        """
+        Тест получения тега по неверному id.
+        """
+        url = reverse('recipes:tags-detail', args=(100,))
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

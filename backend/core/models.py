@@ -20,6 +20,7 @@ class CommonFieldsModel(CreationDate):
     name = models.CharField(
         verbose_name=_('Название'),
         null=False,
+        blank=True,
         max_length=200,
     )
 

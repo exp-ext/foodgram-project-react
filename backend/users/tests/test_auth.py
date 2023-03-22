@@ -54,6 +54,10 @@ class AuthTestCase(TestCase):
                 User.objects.filter(
                     username=data['username']).exists()
             )
+            if data == invalid_user_data[0]:
+                self.assertTrue(
+                    'This field is required.' in response.data['first_name']
+                )
 
     def test_get_token(self):
         """
@@ -64,6 +68,16 @@ class AuthTestCase(TestCase):
         response = self.client.post('/api/auth/token/login/', self.user_data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue('auth_token' in response.data)
+
+    def test_not_auth_logout(self):
+        """
+        Тест выхода из системы и аннулирование токена не авторизованным
+        пользователем.
+        """
+        self.user = User.objects.create_user(**self.user_data)
+        self.token = Token.objects.create(user=self.user)
+        response = self.client.post('/api/auth/token/logout/')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_logout(self):
         """

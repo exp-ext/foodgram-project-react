@@ -1,6 +1,7 @@
 import weasyprint
 from core.permissions import IsAdmin, IsOwner, ReadOnly
 from core.serializers import CroppedRecipeSerializer
+from django.conf import settings
 from django.db.models import Prefetch, Sum
 from django.db.models.query import QuerySet
 from django.http import HttpRequest, HttpResponse
@@ -131,7 +132,6 @@ class RecipeViewSet(ModelViewSet):
             permission_classes=(IsAuthenticated,))
     def download_shopping_cart(self, request):
         """Скачать список покупок."""
-        pass
         ingredients = (
             request.user.customer
             .prefetch_related(
@@ -155,7 +155,9 @@ class RecipeViewSet(ModelViewSet):
         html = template.render(context)
         pdf_file = (
             weasyprint.HTML(string=html)
-            .write_pdf(stylesheets=['backend/static/css/main.css'])
+            .write_pdf(
+                stylesheets=[f'{settings.BASE_DIR}/static/css/main.css']
+            )
         )
         response = HttpResponse(
             pdf_file,
