@@ -40,5 +40,7 @@
 <hr />
 <h3>Автор проекта:</h3>
 <p>Борокин Андрей</p>
-- git: [exp-ext](https://github.com/exp-ext)
+
+- GITHUB: [exp-ext](https://github.com/exp-ext)
+
 - [![Join Telegram](https://img.shields.io/badge/My%20Telegram-Join-blue)](https://t.me/Borokin)
