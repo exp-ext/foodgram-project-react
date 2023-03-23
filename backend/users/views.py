@@ -97,9 +97,9 @@ class UserViewSet(UserViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
         serializer = SubscriptionsSerializer(
-                author,
-                data=request.data,
-                context={'request': request}
+            author,
+            data=request.data,
+            context={'request': request}
         )
         serializer.is_valid(raise_exception=True)
         publisher = AuthorSubscription.objects.create(

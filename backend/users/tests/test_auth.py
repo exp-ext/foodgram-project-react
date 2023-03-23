@@ -88,6 +88,6 @@ class AuthTestCase(TestCase):
         response = self.client.post(
             '/api/auth/token/logout/', HTTP_AUTHORIZATION=(
                 f'Token {self.token.key}')
-            )
+        )
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(Token.objects.filter(user=self.user).exists())

@@ -103,7 +103,7 @@ class TagsTestCase(APITestCase):
                 'first_name': self.author.first_name,
                 'last_name': self.author.last_name,
                 'is_subscribed': False,
-                },
+            },
             'image': IMAGE,
             'text': 'New recipe text',
             'cooking_time': 15,

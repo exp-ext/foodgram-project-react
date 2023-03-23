@@ -120,9 +120,9 @@ class RecipeViewSet(ModelViewSet):
             )
             serializer.is_valid(raise_exception=True)
             return Response(
-                    serializer.data,
-                    status=status.HTTP_201_CREATED
-                )
+                serializer.data,
+                status=status.HTTP_201_CREATED
+            )
         return Response(
             {'errors': answer_text[method].get('errors')},
             status=status.HTTP_400_BAD_REQUEST
