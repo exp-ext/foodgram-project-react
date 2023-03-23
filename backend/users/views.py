@@ -99,7 +99,7 @@ class UserViewSet(UserViewSet):
         serializer = SubscriptionsSerializer(
                 author,
                 data=request.data,
-                context={"request": request}
+                context={'request': request}
         )
         serializer.is_valid(raise_exception=True)
         publisher = AuthorSubscription.objects.create(

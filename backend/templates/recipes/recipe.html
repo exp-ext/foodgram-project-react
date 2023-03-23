@@ -1,15 +1,13 @@
+{% extends "base.html" %}
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="utf-8">
- 
-  <title>The HTML5 Herald</title>
-  <meta name="description" content="The HTML5 Herald">
-  <meta name="author" content="SitePoint">
+{% block title %}Список покупок{% endblock %}
 
+{% block head %}
   <link rel="stylesheet" href="{% static 'css/main.css' %}">
+{% endblock %}
+
+{% block content %}
 
   <div class="banner">
     <p>&nbsp;</p>
@@ -18,10 +16,7 @@
     <p>&nbsp;</p>
     <p>&nbsp;</p>
   </div>
- 
-</head>
 
-<body>
   <div class="content">
     <p>&nbsp;</p>
     <p>&nbsp;</p>
@@ -38,6 +33,6 @@
   </div>
 
 
-</body>
+  {% endblock%}
 
-</html>
+

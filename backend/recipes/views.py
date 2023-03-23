@@ -9,12 +9,11 @@ from django.shortcuts import get_object_or_404
 from django.template.loader import get_template
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.filters import SearchFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
-from .filters import RecipeFilter
+from .filters import IngredientFilter, RecipeFilter
 from .models import FavoritesList, Ingredient, Recipe, ShoppingList, Tag
 from .serializers import (IngredientSerializer, RecipeCreateSerializer,
                           RecipeSerializer, TagSerializer)
@@ -31,6 +30,7 @@ class TagViewSet(ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     permission_classes = (IsAdmin | ReadOnly,)
+    pagination_class = None
 
 
 class IngredientViewSet(ReadOnlyModelViewSet):
@@ -42,8 +42,8 @@ class IngredientViewSet(ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     permission_classes = (IsAdmin | ReadOnly,)
-    filter_backends = (SearchFilter, )
-    search_fields = ('^name', )
+    filterset_class = IngredientFilter
+    pagination_class = None
 
 
 class RecipeViewSet(ModelViewSet):
@@ -151,7 +151,7 @@ class RecipeViewSet(ModelViewSet):
             .distinct()
         )
         context = {'ingredients': ingredients}
-        template = get_template('recipe.html')
+        template = get_template('recipes/recipe.html')
         html = template.render(context)
         pdf_file = (
             weasyprint.HTML(string=html)
