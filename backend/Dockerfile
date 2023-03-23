@@ -5,6 +5,7 @@ WORKDIR /app
 RUN apt-get update && apt-get install --no-install-recommends --no-install-suggests -y \
         libpango1.0-dev \
         libglib2.0-dev && \
+    apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
