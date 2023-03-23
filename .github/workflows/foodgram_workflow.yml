@@ -89,9 +89,6 @@ jobs:
             echo LOCAL_DEV=${{ secrets.LOCAL_DEV }} >> .env
             echo DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }} >> .env
             sudo docker compose up -d --build
-            sudo docker compose exec backend python manage.py collectstatic --no-input --clear
-            sleep 10
-            sudo docker compose exec backend python manage.py migrate --noinput
 
   send_message:
     runs-on: ubuntu-latest
@@ -103,3 +100,11 @@ jobs:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
         message: ${{ github.workflow }} успешно выполнен!
+
+
+
+
+
+
+            # sudo docker compose exec backend python manage.py collectstatic --no-input --clear
+            # sudo docker compose exec backend python manage.py migrate --noinput
