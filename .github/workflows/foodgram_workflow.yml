@@ -2,11 +2,12 @@ name: Django-app workflow
 
 on: [push]
 
+env: 
+  DEBUG: 1
+
 jobs:
   tests:
-    runs-on: ubuntu-latest  
-    env: 
-    - DEBUG: 1
+    runs-on: ubuntu-latest    
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python
