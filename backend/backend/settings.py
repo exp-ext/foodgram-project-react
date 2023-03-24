@@ -230,3 +230,35 @@ DJOSER = {
         'user_create': 'users.serializers.UserSerializer',
     },
 }
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+        'file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.fspath(PurePath(BASE_DIR, 'logs')) + '/file.log',
+            'maxBytes': 10485760,
+            'backupCount': 5,
+        },
+    },
+    'formatters': {
+        'django.server': {
+            '()': 'django.utils.log.ServerFormatter',
+            'format': '[%(server_time)s] %(message)s',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+        },
+        'recipes': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
+    },
+}

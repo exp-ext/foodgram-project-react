@@ -90,7 +90,7 @@ jobs:
             echo LOCAL_DEV=${{ secrets.LOCAL_DEV }} >> .env
             echo DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }} >> .env
             sudo docker compose up -d --build
-            sudo docker compose exec backend python manage.py collectstatic --no-input --clear
+            sudo docker compose exec backend python manage.py collectstatic --noinput
             sudo docker compose exec backend python manage.py migrate --noinput
 
   send_message:
