@@ -75,6 +75,7 @@ jobs:
           script: |
             sudo docker compose down
             sudo docker compose rm backend
+            sudo docker compose rm frontend
             rm .env
             touch .env
             echo POSTGRES_ENGINE=${{ secrets.POSTGRES_ENGINE }} >> .env

@@ -1,4 +1,10 @@
 <h2>Foodgram, &laquo;Продуктовый помощник&raquo;.</h2>
+
+![статус](https://github.com/exp-ext/yamdb_final/actions/workflows/yamdb_workflow.yml/badge.svg?event=push)
+
+<p align="center">
+<img src="https://github.com/exp-ext/foodgram-project-react/blob/master/backend/static/img/top-banner.jpg?raw=true" width="1200">
+</p>
 <p>Онлайн-сервис и API для него. На этом сервисе пользователи смогут публиковать рецепты, подписываться на публикации других пользователей, добавлять понравившиеся рецепты в список &laquo;Избранное&raquo;, а перед походом в магазин скачивать сводный список продуктов, необходимых для приготовления одного или нескольких выбранных блюд.</p>
 <hr />
 <h3>Стек технологий</h3>
@@ -18,7 +24,7 @@
 <hr />
 <h3>Документация к API</h3>
 <ul>
-<li>Написана с использованием Redoc и доступна по адресу: http://158.160.32.230/api/docs/redoc.html </li>
+<li>Написана с использованием Redoc и доступна по адресу: http://localhost/api/docs/redoc.html </li>
 </ul>
 <hr />
 <h3>Особенности реализации</h3>
