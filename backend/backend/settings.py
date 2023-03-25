@@ -146,6 +146,8 @@ AUTH_USER_MODEL = 'users.User'
 
 CSRF_FAILURE_VIEW = 'core.views.csrf_failure'
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
@@ -231,6 +233,11 @@ DJOSER = {
     },
 }
 
+log_file = os.path.join(BASE_DIR, 'logs', 'file.log')
+if not os.path.exists(log_file):
+    os.makedirs(os.path.dirname(log_file), exist_ok=True)
+    open(log_file, 'a').close()
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -240,7 +247,7 @@ LOGGING = {
         },
         'file': {
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': os.fspath(PurePath(BASE_DIR, 'logs')) + '/file.log',
+            'filename': log_file,
             'maxBytes': 10485760,
             'backupCount': 5,
         },

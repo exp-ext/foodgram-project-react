@@ -1,3 +1,4 @@
+from core.pagination import CustomPaginator
 from django.contrib.auth import get_user_model
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404
@@ -27,6 +28,7 @@ class UserViewSet(UserViewSet):
     - `DELETE`/subscribe/: подписаться на пользователя
     """
     permission_classes = (DjangoModelPermissions,)
+    pagination_class = CustomPaginator
 
     def perform_create(self, serializer: Serializer) -> None:
         """

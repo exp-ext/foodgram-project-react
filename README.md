@@ -32,7 +32,7 @@
 <li>Проект запускается в Docker контейнерах;</li>
 <li>Образы foodgram_frontend и foodgram_backend запушены на DockerHub;</li>
 <li>Реализован CI/CD;</li>
-<li>Проект развернут на сервере: http://158.160.32.230/ </li>
+<li>Проект развернут на сервере: http://grandmasrecipes.fun/ </li>
 </ul>
 <hr />
 <h3>Развертывание на локальном сервере</h3>

@@ -1,4 +1,5 @@
 import weasyprint
+from core.pagination import CustomPaginator
 from core.permissions import IsAdmin, IsOwner, ReadOnly
 from core.serializers import CroppedRecipeSerializer
 from django.conf import settings
@@ -60,6 +61,7 @@ class RecipeViewSet(ModelViewSet):
     serializer_class = RecipeSerializer
     permission_classes = (IsOwner | IsAdmin | ReadOnly,)
     filterset_class = RecipeFilter
+    pagination_class = CustomPaginator
 
     def get_serializer_class(self):
         if self.action in ('list', 'retrieve'):

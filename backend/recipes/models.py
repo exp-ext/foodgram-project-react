@@ -99,7 +99,7 @@ class Recipe(CommonFieldsModel):
         verbose_name=_('Теги'),
         to=Tag,
     )
-    cooking_time = models.PositiveSmallIntegerField(
+    cooking_time = models.PositiveIntegerField(
         verbose_name=_('Время приготовления'),
         default=0,
     )
@@ -136,7 +136,7 @@ class IngredientsInRecipe(models.Model):
         to=Ingredient,
         on_delete=models.CASCADE,
     )
-    amount = models.PositiveSmallIntegerField(
+    amount = models.PositiveIntegerField(
         verbose_name=_('Количество'),
         default=0,
     )
