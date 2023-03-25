@@ -90,9 +90,6 @@ jobs:
             echo DEBUG=${{ secrets.DEBUG }} >> .env
             echo LOCAL_DEV=${{ secrets.LOCAL_DEV }} >> .env
             echo DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }} >> .env
-            echo SERVER_NAME=${{ secrets.${SERVER_NAME}} >> .env
-            echo DOMAIN_NAME=${{ secrets.${DOMAIN_NAME}} >> .env
-            echo EMAIL=${{ secrets.EMAIL }} >> .env
             sudo docker compose up -d --build
             sudo docker compose exec backend python manage.py collectstatic --noinput
             sudo docker compose exec backend python manage.py migrate --noinput
