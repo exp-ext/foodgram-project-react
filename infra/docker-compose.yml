@@ -21,7 +21,6 @@ services:
     volumes:
       - static_volume:/app/static/:rw
       - media_volume:/app/media/:rw
-      - ../data/:/data/:rw
     ports:
      - "8000:8000"
     depends_on:

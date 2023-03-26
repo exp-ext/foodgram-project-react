@@ -21,12 +21,12 @@ from django.views.generic import TemplateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path(
-        'docs/redoc/',
-        TemplateView.as_view(template_name='docs/redoc.html'),
-        name='redoc'
-    ),
     path('api/', include([
+        path(
+            'docs/redoc/',
+            TemplateView.as_view(template_name='docs/redoc.html'),
+            name='redoc'
+        ),
         path('users/', include(('users.urls', 'users'))),
         path('auth/', include('djoser.urls.authtoken')),
         path('', include(('recipes.urls', 'recipes'))),
