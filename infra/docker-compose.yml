@@ -44,6 +44,7 @@ services:
       - "443:443"    
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx/:/etc/nginx/templates:rw
       - ./certbot/conf/:/etc/letsencrypt/:rw
       - ./certbot/www/:/var/www/certbot/:rw
       - frontend_volume:/usr/share/nginx/html/:ro      
@@ -53,6 +54,8 @@ services:
     depends_on:
       - backend
       - frontend
+    env_file:
+      - ./.env
 
   certbot:
     image: certbot/certbot

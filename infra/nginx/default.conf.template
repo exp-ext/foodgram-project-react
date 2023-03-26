@@ -5,15 +5,15 @@ upstream backend {
 server {
     listen 80;
     server_tokens off;
-    server_name grandmasrecipes.fun www.grandmasrecipes.fun 158.160.32.230;
+    server_name ${SERVER_NAME};
     client_max_body_size 10M;
 
     access_log  /var/log/nginx/access.log;
     error_log   /var/log/nginx/error.log;
 
     listen 443 ssl;
-    ssl_certificate /etc/letsencrypt/live/grandmasrecipes.fun/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/grandmasrecipes.fun/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/${DOMAIN_NAME}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${DOMAIN_NAME}/privkey.pem;
     include /etc/letsencrypt/options-ssl-nginx.conf;
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 
