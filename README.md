@@ -24,7 +24,7 @@
 <hr />
 <h3>Документация к API</h3>
 <ul>
-<li>Написана с использованием Redoc и доступна по адресу: https://grandmasrecipes.fun/docs/redoc.html </li>
+<li>Написана с использованием Redoc и доступна по адресу: https://grandmasrecipes.fun/docs/redoc </li>
 </ul>
 <hr />
 <h3>Особенности реализации</h3>
