@@ -24,7 +24,7 @@
 <hr />
 <h3>Документация к API</h3>
 <ul>
-<li>Написана с использованием Redoc и доступна по адресу: http://localhost/api/docs/redoc.html </li>
+<li>Написана с использованием Redoc и доступна по адресу: https://grandmasrecipes.fun/docs/redoc.html </li>
 </ul>
 <hr />
 <h3>Особенности реализации</h3>
@@ -32,16 +32,23 @@
 <li>Проект запускается в Docker контейнерах;</li>
 <li>Образы foodgram_frontend и foodgram_backend запушены на DockerHub;</li>
 <li>Реализован CI/CD;</li>
-<li>Проект развернут на сервере: http://grandmasrecipes.fun/ </li>
+<li>Проект развернут на сервере: https://grandmasrecipes.fun/ </li>
 </ul>
 <hr />
-<h3>Развертывание на локальном сервере</h3>
+<h3>Развертывание на сервере c получением сертификата</h3>
 <ul>
-<li>Установите на сервере docker и docker-compose;</li>
-<li>Создайте файл /infra/.env. Шаблон для заполнения файла нахоится в /infra/.env.example;</li>
-<li>Выполните команду docker-compose up -d --buld;</li>
-<li>Создайте суперюзера docker-compose exec backend python manage.py createsuperuser;</li>
-<li>Заполните базу ингредиентами docker-compose exec backend python manage.py convert_from_csv;<br /><br /></li>
+<li>Установите на сервере docker и docker-compose-plugin;</li>
+<li>Клонируйте на локальный компьютер репозиторий;</li>
+<li>Создайте файл /infra/.env. Шаблон для заполнения файла находится в /infra/.env.example;</li>
+<li>Исправьте файл ./infra/nginx/nginx.conf под свой сервер и для получения сертификата, закомментируйте строки 14:18</li>
+<li>Скопируйте папку /infra со всем содержимым на сервер `scp -r ~/foodgram-project-react/infra your_name@IP.ad.re.ss:~/`
+</li>
+<li>На сервере, перейдите в папку infra/ и получите сертификаты запустив скрипт `sudo ./init-letsencrypt.sh`</li>
+<li>Остановите сервер `docker compose down` </li>
+<li>Раскомментируйте строки 14:18 в файле ./infra/nginx/nginx.conf изменив пути согласно своего домена</li>
+<li>В папке infra выполните команду `docker compose up -d --build`;</li>
+<li>Создайте суперюзера `docker compose exec backend python manage.py createsuperuser`</li>
+<br /><br />
 </ul>
 <hr />
 <h3>Автор проекта:</h3>

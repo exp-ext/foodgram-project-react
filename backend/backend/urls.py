@@ -17,9 +17,15 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
+from django.views.generic import TemplateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path(
+        'docs/redoc/',
+        TemplateView.as_view(template_name='docs/redoc.html'),
+        name='redoc'
+    ),
     path('api/', include([
         path('users/', include(('users.urls', 'users'))),
         path('auth/', include('djoser.urls.authtoken')),
