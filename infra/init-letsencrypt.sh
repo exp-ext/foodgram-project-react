@@ -3,8 +3,8 @@
 source .env
 
 domains=($DOMAIN_NAME www.$DOMAIN_NAME)
-email=$EMAIL # Adding a valid address is strongly recommended
-staging=$STAGING # Set to 1 if you're testing your setup to avoid hitting request limits
+email=$EMAIL
+staging=$STAGING
 
 data_path="./certbot"
 rsa_key_size=4096

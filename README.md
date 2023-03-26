@@ -40,12 +40,12 @@
 <li>Установите на сервере docker и docker-compose-plugin;</li>
 <li>Клонируйте на локальный компьютер репозиторий;</li>
 <li>Создайте файл /infra/.env. Шаблон для заполнения файла находится в /infra/.env.example;</li>
-<li>В файле ./infra/nginx/nginx.conf, для получения сертификата, закомментируйте строки 14:18</li>
-<li>Скопируйте папку /infra со всем содержимым на сервер `scp -r ~/foodgram-project-react/infra your_name@IP.ad.re.ss:~/`
+<li>В файле ./infra/nginx/default.conf.template закомментируйте строки 14:18 для получения сертификата.</li>
+<li>Скопируйте папку infra со всем содержимым на сервер `scp -r ~/foodgram-project-react/infra name@IP.ad.re.ss:~/`
 </li>
-<li>На сервере, перейдите в папку infra/ и получите сертификаты запустив скрипт `sudo ./init-letsencrypt.sh`</li>
+<li>На сервере, перейдите в папку infra/ и получите сертификаты в Let's Encrypt запустив скрипт `sudo ./init-letsencrypt.sh`</li>
 <li>Остановите сервер `docker compose down` </li>
-<li>Раскомментируйте строки 14:18 в файле ./infra/nginx/nginx.conf изменив пути согласно своего домена</li>
+<li>Раскомментируйте строки 14:18 в файле ./infra/nginx/default.conf.template</li>
 <li>В папке infra выполните команду `docker compose up -d --build`;</li>
 <li>Создайте суперюзера `docker compose exec backend python manage.py createsuperuser`</li>
 <br /><br />
