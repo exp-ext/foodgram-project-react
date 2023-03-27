@@ -1,6 +1,6 @@
 <h2>Foodgram, &laquo;Продуктовый помощник&raquo;.</h2>
 
-![статус](https://github.com/exp-ext/yamdb_final/actions/workflows/yamdb_workflow.yml/badge.svg?event=push)
+![статус](https://github.com/exp-ext/foodgram-project-react/actions/workflows/foodgram_workflow.yml/badge.svg?event=push)
 
 <p align="center">
 <img src="https://github.com/exp-ext/foodgram-project-react/blob/master/backend/static/img/top-banner.jpg?raw=true" width="1200">

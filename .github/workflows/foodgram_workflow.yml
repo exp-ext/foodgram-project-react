@@ -75,8 +75,8 @@ jobs:
           script: |
             cd ~/infra
             sudo docker compose down
-            sudo docker rmi expext/foodgram-backend
-            sudo docker rmi expext/foodgram-frontend
+            sudo docker rmi ${{ secrets.DOCKER_USERNAME }}/foodgram-backend
+            sudo docker rmi ${{ secrets.DOCKER_USERNAME }}/foodgram-frontend
             rm .env
             touch .env
             echo POSTGRES_ENGINE=${{ secrets.POSTGRES_ENGINE }} >> .env
