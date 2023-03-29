@@ -59,10 +59,10 @@ class Ingredient(CommonFieldsModel):
                 fields=('name', 'measurement_unit',),
                 name='%(app_label)s_%(class)s_name_unique'
             ),
-            # models.CheckConstraint(
-            #     check=models.Q(name__length__gt=0),
-            #     name='\n%(app_label)s_%(class)s_name is empty\n',
-            # ),
+            models.CheckConstraint(
+                check=models.Q(name__length__gt=0),
+                name='\n%(app_label)s_%(class)s_name is empty\n',
+            ),
             models.CheckConstraint(
                 check=models.Q(measurement_unit__length__gt=0),
                 name='\n%(app_label)s_%(class)s_measurement_unit is empty\n',
