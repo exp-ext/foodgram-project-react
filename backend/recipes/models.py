@@ -1,6 +1,7 @@
 from core.models import CommonFieldsModel, CreationDate
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.db.models import Q
 from django.db.models.functions import Length
 from django.utils.translation import gettext_lazy as _
 from pytils.translit import slugify
@@ -111,6 +112,10 @@ class Recipe(CommonFieldsModel):
             models.UniqueConstraint(
                 fields=('name', 'author'),
                 name='%(app_label)s_%(class)s_author_unique',
+            ),
+            models.CheckConstraint(
+                check=~Q(cooking_time=0),
+                name='%(app_label)s_%(class)s_cooking_time_not_zero',
             ),
             models.CheckConstraint(
                 check=models.Q(name__length__gt=0),
