@@ -33,11 +33,6 @@
 <li>Образы foodgram_frontend и foodgram_backend запушены на DockerHub;</li>
 <li>Реализован CI/CD;</li>
 <li>Проект развернут на сервере: https://grandmasrecipes.fun/ </li>
-<br /><br />
-<p>Вход в административную панель https://grandmasrecipes.fun/admin/</p>
-login: admin
-
-pass: 6d7sc85s7mzc05dhpjt846
 </ul>
 <hr />
 <h3>Развертывание на сервере c получением сертификата</h3>
