@@ -1,7 +1,6 @@
 from core.models import CommonFieldsModel, CreationDate
 from django.contrib.auth import get_user_model
 from django.db import models
-from django.db.models import Q
 from django.db.models.functions import Length
 from django.utils.translation import gettext_lazy as _
 from pytils.translit import slugify
@@ -60,10 +59,10 @@ class Ingredient(CommonFieldsModel):
                 fields=('name', 'measurement_unit',),
                 name='%(app_label)s_%(class)s_name_unique'
             ),
-            models.CheckConstraint(
-                check=models.Q(name__length__gt=0),
-                name='\n%(app_label)s_%(class)s_name is empty\n',
-            ),
+            # models.CheckConstraint(
+            #     check=models.Q(name__length__gt=0),
+            #     name='\n%(app_label)s_%(class)s_name is empty\n',
+            # ),
             models.CheckConstraint(
                 check=models.Q(measurement_unit__length__gt=0),
                 name='\n%(app_label)s_%(class)s_measurement_unit is empty\n',
@@ -114,7 +113,7 @@ class Recipe(CommonFieldsModel):
                 name='%(app_label)s_%(class)s_author_unique',
             ),
             models.CheckConstraint(
-                check=~Q(cooking_time=0),
+                check=~models.Q(cooking_time=0),
                 name='%(app_label)s_%(class)s_cooking_time_not_zero',
             ),
             models.CheckConstraint(
